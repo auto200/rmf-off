@@ -1,10 +1,11 @@
 import React from "react";
 import styled from "styled-components";
 import Tail from "./Tail";
+import { Tail as TailInterface } from "../../App";
 import { usePlayer } from "../../contexts/PlayerContext";
 import PropTypes from "prop-types";
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ wideGridLayout: boolean }>`
   width: 100%;
   display: grid;
   grid-template-columns: ${({ wideGridLayout }) =>
@@ -16,8 +17,11 @@ const Wrapper = styled.div`
   padding: 15px;
   overflow: hidden;
 `;
-
-const Tails = ({ tails, wideGridLayout }) => {
+interface Props {
+  tails: TailInterface[];
+  wideGridLayout: boolean;
+}
+const Tails = ({ tails, wideGridLayout }: Props) => {
   const {
     currentStationId,
     playerState,
@@ -58,18 +62,3 @@ const Tails = ({ tails, wideGridLayout }) => {
 };
 
 export default Tails;
-
-Tails.propTypes = {
-  tails: PropTypes.arrayOf(
-    PropTypes.exact({
-      id: PropTypes.string,
-      stationName: PropTypes.string,
-      streamURL: PropTypes.string,
-      artist: PropTypes.string,
-      songName: PropTypes.string,
-      cover: PropTypes.string,
-      defaultCover: PropTypes.string
-    })
-  ),
-  wideGridLayout: PropTypes.bool
-};

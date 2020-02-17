@@ -5,6 +5,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FaGoogle, FaYoutube, FaPlay } from "react-icons/fa";
 import DotMenu, { MenuItem } from "./DotsMenu";
 import PropTypes from "prop-types";
+import { Tail as TailInterface } from "../../../App";
+import {
+  HandleActionButtonClick,
+  PlayerState
+} from "../../../contexts/PlayerContext";
 
 const Wrapper = styled.div`
   position: relative;
@@ -23,11 +28,13 @@ const Title = styled.h1`
   align-items: center;
   color: ${({ theme }) => theme.colors.highlightText};
 `;
-const CoverContainer = styled(motion.div).attrs(({ cover, defaultCover }) => ({
-  style: {
-    backgroundImage: `url(${cover}), url(${defaultCover})`
-  }
-}))`
+const CoverContainer = styled(motion.div).attrs(
+  ({ cover, defaultCover }: { cover: string; defaultCover: string }): any => ({
+    style: {
+      backgroundImage: `url(${cover}), url(${defaultCover})`
+    }
+  })
+)`
   position: relative;
   font-size: 70px;
   cursor: pointer;
@@ -50,7 +57,7 @@ const CoverContainer = styled(motion.div).attrs(({ cover, defaultCover }) => ({
   }
 `;
 
-const ActionButtonWrapper = styled.div`
+const ActionButtonWrapper = styled.div<{ isActive: boolean }>`
   width: 100%;
   height: 100%;
   opacity: ${({ isActive }) => (isActive ? 0.7 : 0)};
@@ -81,6 +88,11 @@ const MenuButtonContainer = styled.div`
   bottom: 20px;
   right: 20px;
 `;
+interface Props extends TailInterface {
+  isActive: boolean;
+  handleActionButtonClick: HandleActionButtonClick;
+  playerState: PlayerState;
+}
 const Tail = ({
   stationName,
   cover,
@@ -93,7 +105,7 @@ const Tail = ({
   isActive,
   handleActionButtonClick,
   playerState
-}) => {
+}: Props) => {
   const handleClick = () => {
     if (isActive) {
       handleActionButtonClick(null, true);
@@ -160,17 +172,3 @@ const Tail = ({
 };
 
 export default Tail;
-
-Tail.propTypes = {
-  stationName: PropTypes.string.isRequired,
-  cover: PropTypes.string,
-  songName: PropTypes.string,
-  artist: PropTypes.string,
-  defaultCover: PropTypes.string.isRequired,
-  streamURL: PropTypes.string.isRequired,
-  //player props
-  id: PropTypes.string.isRequired,
-  isActive: PropTypes.bool.isRequired,
-  handleActionButtonClick: PropTypes.func.isRequired,
-  playerState: PropTypes.string.isRequired
-};

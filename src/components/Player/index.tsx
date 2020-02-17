@@ -4,12 +4,11 @@ import { usePlayer } from "../../contexts/PlayerContext";
 import { FaVolumeUp, FaVolumeDown, FaVolumeMute } from "react-icons/fa";
 import { playerHeight } from "../../utils/constants";
 import PlayerStateIcon from "../PlayerStateIcon";
-import { playerStates } from "../../contexts/PlayerContext";
 import Slider from "react-rangeslider";
 import "react-rangeslider/lib/index.css";
 import useDebounce from "../../utils/hooks/useDebounce";
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ isShown: boolean }>`
   display: grid;
   grid-template-columns: 20% 12% 33% 15% 20%;
   grid-template-rows: 100%;
@@ -31,7 +30,7 @@ const Wrapper = styled.div`
   border-top: 1px solid ${({ theme }) => theme.colors.regularText};
   padding: 0 15px;
 `;
-const Field = styled.div`
+const Field = styled.div<{ highlight?: boolean }>`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -99,7 +98,7 @@ const ActionButtonWrapper = styled.div`
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 `;
-const AudioIcon = ({ volume }) => {
+const AudioIcon = ({ volume }: { volume: number }) => {
   if (volume === 0) return <FaVolumeMute />;
   if (volume > 0 && volume < 51) return <FaVolumeDown />;
   return <FaVolumeUp />;
@@ -112,21 +111,21 @@ const Player = () => {
     setPlayerState,
     handleActionButtonClick
   } = usePlayer();
-  const [volume, setVolume] = useState(50);
+  const [volume, setVolume] = useState<number>(50);
 
   const debouncedVolume = useDebounce(volume, 3000);
-  const audioRef = useRef(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
     const savedVolume = window.localStorage.getItem("volume");
     if (savedVolume) {
-      setVolume(savedVolume * 1);
+      setVolume(+savedVolume);
     }
   }, []);
 
   useEffect(() => {
     //idk it seems to be so loud so thats why divide by value higher than 100 (0-1 range)
-    audioRef.current.volume = volume / 550;
+    audioRef.current!.volume = volume / 550;
   }, [volume]);
 
   useEffect(() => {
@@ -134,9 +133,11 @@ const Player = () => {
   }, [debouncedVolume]);
 
   useEffect(() => {
-    if (playerState === playerStates.PLAYING) {
+    if (!audioRef || !audioRef.current) return;
+
+    if (playerState === "PLAYING") {
       audioRef.current.play();
-    } else if (playerState === playerStates.PAUSED) {
+    } else if (playerState === "PAUSED") {
       audioRef.current.pause();
     }
   }, [playerState]);
@@ -166,12 +167,13 @@ const Player = () => {
       <audio
         src={streamURL}
         ref={audioRef}
-        onLoadStart={() => setPlayerState(playerStates.LOADING)}
+        onLoadStart={() => setPlayerState("LOADING")}
         onCanPlay={() => {
+          if (!audioRef || !audioRef.current) return;
           audioRef.current.play();
         }}
-        onPause={() => setPlayerState(playerStates.PAUSED)}
-        onPlaying={() => setPlayerState(playerStates.PLAYING)}
+        onPause={() => setPlayerState("PAUSED")}
+        onPlaying={() => setPlayerState("PLAYING")}
       />
     </Wrapper>
   );

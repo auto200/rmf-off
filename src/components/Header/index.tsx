@@ -65,7 +65,7 @@ const Header = ({
       </ToggleTheme>
       <Filters>
         <select value={currentFilterType} onChange={handleFilterTypeChange}>
-          {Object.entries(filterTypes).map(filter => (
+          {Object.entries(filterTypes).map((filter: any) => (
             <option key={filter[0]} value={filter[0]}>
               {filter[1]}
             </option>

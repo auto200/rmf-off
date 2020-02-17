@@ -9,8 +9,9 @@ import { decode } from "ent";
 import PlayerContext from "./contexts/PlayerContext";
 import { headerHeight, playerHeight } from "./utils/constants";
 import "typeface-quicksand";
+import { Theme } from "./utils/themes";
 
-const GlobalStyle = createGlobalStyle`
+const GlobalStyle = createGlobalStyle<{ theme: Theme }>`
   html, body{
     margin: 0;
     padding: 0;
@@ -30,8 +31,12 @@ const GlobalStyle = createGlobalStyle`
 const StyledErrorMessage = styled.div`
   color: ${({ theme }) => theme.colors.highlightText};
 `;
-
-const filterTypes = {
+interface FilterTypes {
+  stationName: string;
+  artist: string;
+  songName: string;
+}
+const filterTypes: FilterTypes = {
   stationName: "Nazwa stacji",
   artist: "Wykonawca",
   songName: "Nazwa piosenki"
@@ -44,19 +49,31 @@ const sleep = async time => {
     }, time);
   });
 };
+interface InitialStationInfo {
+  id: number;
+  stationName: string;
+  streamURL: string;
+  defaultCover: string;
+}
+export interface Tail extends InitialStationInfo {
+  artist: string;
+  songName: string;
+  cover: string;
+}
 
 const App = () => {
-  const [initialStationInfo, setInitialStationInfo] = useState([]);
-  const [error, setError] = useState("");
-  const [darkMode, setDarkMode] = useState(true);
-  const [allTails, setAllTails] = useState([]);
-  window.tails = allTails;
-  const [filtredTails, setFiltredTails] = useState([]);
+  const [initialStationInfo, setInitialStationInfo] = useState<
+    InitialStationInfo[]
+  >([]);
+  const [error, setError] = useState<string>("");
+  const [darkMode, setDarkMode] = useState<boolean>(true);
+  const [allTails, setAllTails] = useState<Tail[]>([]);
+  const [filtredTails, setFiltredTails] = useState<Tail[]>([]);
   const [[currentFilterType, filterValue], setFilter] = useState([
     "stationName",
     ""
   ]);
-  const [wideGridLayout, setWideGridLayout] = useState(true);
+  const [wideGridLayout, setWideGridLayout] = useState<boolean>(true);
 
   useEffect(() => {
     const getInitialStationInfo = async () => {
@@ -82,7 +99,9 @@ const App = () => {
 
     // loading themes from localstorage
     try {
-      const savedDarkMode = JSON.parse(window.localStorage.getItem("darkMode"));
+      const savedDarkMode = JSON.parse(
+        window.localStorage.getItem("darkMode")!
+      );
       if (savedDarkMode === null) {
         setDarkMode(true);
       } else {
@@ -94,7 +113,7 @@ const App = () => {
 
     try {
       const savedGridLayout = JSON.parse(
-        window.localStorage.getItem("wideGridLayout")
+        window.localStorage.getItem("wideGridLayout")!
       );
       if (savedGridLayout === null) {
         setWideGridLayout(true);
@@ -140,15 +159,15 @@ const App = () => {
     );
   }, [allTails, filterValue, currentFilterType]);
 
-  const toggleDarkMode = () =>
-    setDarkMode(prev => {
-      localStorage.setItem("darkMode", !prev);
+  const toggleDarkMode = (): void =>
+    setDarkMode((prev: boolean) => {
+      localStorage.setItem("darkMode", !prev + "");
       return !prev;
     });
 
-  const toggleGridLayout = () =>
+  const toggleGridLayout = (): void =>
     setWideGridLayout(prev => {
-      localStorage.setItem("wideGridLayout", !prev);
+      localStorage.setItem("wideGridLayout", !prev + "");
       return !prev;
     });
 

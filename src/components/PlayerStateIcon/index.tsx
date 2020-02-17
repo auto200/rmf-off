@@ -2,8 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { FaPlay, FaPause } from "react-icons/fa";
 import { AiOutlineLoading } from "react-icons/ai";
-import { playerStates } from "../../contexts/PlayerContext";
-import PropTypes from "prop-types";
+import { PlayerState } from "../../contexts/PlayerContext";
 
 const LoadingButton = styled(AiOutlineLoading)`
   animation: rotate 2s linear infinite;
@@ -17,14 +16,19 @@ const LoadingButton = styled(AiOutlineLoading)`
     }
   }
 `;
-const PlayerStateIcon = ({ playerState, ...props }) => {
+const PlayerStateIcon = ({
+  playerState,
+  ...props
+}: {
+  playerState: PlayerState;
+}) => {
   let Button;
 
-  if (playerState === playerStates.PAUSED) {
+  if (playerState === "PAUSED") {
     Button = FaPlay;
-  } else if (playerState === playerStates.PLAYING) {
+  } else if (playerState === "PLAYING") {
     Button = FaPause;
-  } else if (playerState === playerStates.LOADING) {
+  } else if (playerState === "LOADING") {
     Button = LoadingButton;
   }
 
@@ -32,11 +36,3 @@ const PlayerStateIcon = ({ playerState, ...props }) => {
 };
 
 export default PlayerStateIcon;
-
-PlayerStateIcon.propTypes = {
-  playerState: PropTypes.oneOf([
-    playerStates.PLAYING,
-    playerStates.LOADING,
-    playerStates.PAUSED
-  ]).isRequired
-};
