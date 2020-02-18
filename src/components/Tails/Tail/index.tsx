@@ -4,7 +4,6 @@ import PlayerStateIcon from "../../PlayerStateIcon";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaGoogle, FaYoutube, FaPlay } from "react-icons/fa";
 import DotMenu, { MenuItem } from "./DotsMenu";
-import PropTypes from "prop-types";
 import { Tail as TailInterface } from "../../../App";
 import {
   HandleActionButtonClick,

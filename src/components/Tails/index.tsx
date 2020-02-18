@@ -3,7 +3,6 @@ import styled from "styled-components";
 import Tail from "./Tail";
 import { Tail as TailInterface } from "../../App";
 import { usePlayer } from "../../contexts/PlayerContext";
-import PropTypes from "prop-types";
 
 const Wrapper = styled.div<{ wideGridLayout: boolean }>`
   width: 100%;

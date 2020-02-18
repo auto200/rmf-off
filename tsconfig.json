@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "noImplicitAny": false,
+    "noImplicitAny": true,
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
     "target": "es2015",
@@ -12,13 +12,13 @@
     "declaration": false,
     "removeComments": true,
     "noImplicitReturns": true,
-    "noUnusedLocals": false,
+    "noUnusedLocals": true,
     "strict": true,
     "outDir": "dist",
     "baseUrl": "src",
     "typeRoots": ["./types", "node_modules/@types"],
     "strictNullChecks": false,
-    "allowJs": true,
+    "allowJs": false,
     "lib": ["dom", "dom.iterable", "esnext"],
     "skipLibCheck": true,
     "esModuleInterop": true,

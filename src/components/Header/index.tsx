@@ -4,7 +4,7 @@ import { headerHeight } from "../../utils/constants";
 import { FaMoon, FaSun } from "react-icons/fa";
 import { TiThLarge } from "react-icons/ti";
 import { MdApps } from "react-icons/md";
-import PropTypes from "prop-types";
+import { FilterType, FilterTypes } from "../../App";
 
 const Wrapper = styled.header`
   position: fixed;
@@ -39,24 +39,35 @@ const LayoutIconWrapper = styled.div`
     display: none;
   }
 `;
-
+interface Props {
+  toggleDarkMode: () => void;
+  darkMode: boolean;
+  filterValue: string;
+  setFilterValue: (val: string) => void;
+  filterType: FilterType;
+  setFilterType: (val: FilterType) => void;
+  filterTypes: FilterTypes;
+  wideGridLayout: boolean;
+  toggleGridLayout: () => void;
+}
 const Header = ({
   toggleDarkMode,
   darkMode,
-  currentFilterType,
+  filterType,
   filterValue,
-  setFilter,
+  setFilterType,
+  setFilterValue,
   filterTypes,
   wideGridLayout,
   toggleGridLayout
-}) => {
-  const handleFilterTypeChange = e => {
-    const val = e.target.value;
-    setFilter([val, filterValue]);
+}: Props) => {
+  const handleFilterTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const val = e.target.value as FilterType;
+    setFilterType(val);
   };
-  const handleFilterInputChange = e => {
+  const handleFilterInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
-    setFilter([currentFilterType, val]);
+    setFilterValue(val);
   };
   return (
     <Wrapper>
@@ -64,7 +75,7 @@ const Header = ({
         {darkMode ? <FaMoon /> : <FaSun />}
       </ToggleTheme>
       <Filters>
-        <select value={currentFilterType} onChange={handleFilterTypeChange}>
+        <select value={filterType} onChange={handleFilterTypeChange}>
           {Object.entries(filterTypes).map((filter: any) => (
             <option key={filter[0]} value={filter[0]}>
               {filter[1]}
@@ -85,14 +96,3 @@ const Header = ({
 };
 
 export default Header;
-
-Header.propTypes = {
-  toggleDarkMode: PropTypes.func.isRequired,
-  darkMode: PropTypes.bool.isRequired,
-  currentFilterType: PropTypes.string.isRequired,
-  filterValue: PropTypes.string.isRequired,
-  setFilter: PropTypes.func.isRequired,
-  filterTypes: PropTypes.object.isRequired,
-  wideGridLayout: PropTypes.bool.isRequired,
-  toggleGridLayout: PropTypes.func.isRequired
-};

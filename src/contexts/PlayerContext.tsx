@@ -32,7 +32,7 @@ interface Station {
 export interface HandleActionButtonClick {
   (station?: Station, isActive?: boolean): void;
 }
-const PlayerContextProvider = ({ children }) => {
+const PlayerContextProvider: React.FC = ({ children }) => {
   const [station, setStation] = useState({});
   const [currentStationId, setCurrentStationId] = useState<Partial<number>>();
   const [playerState, setPlayerState] = useState<PlayerState>("LOADING");

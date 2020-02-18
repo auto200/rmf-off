@@ -22,7 +22,7 @@ const PlayerStateIcon = ({
 }: {
   playerState: PlayerState;
 }) => {
-  let Button;
+  let Button = FaPlay;
 
   if (playerState === "PAUSED") {
     Button = FaPlay;

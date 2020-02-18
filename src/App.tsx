@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled, { createGlobalStyle, ThemeProvider } from "styled-components";
-import { lightTheme, darkTheme } from "./utils/themes";
+import { lightTheme, darkTheme, Theme } from "./utils/themes";
 import Header from "./components/Header";
 import Tails from "./components/Tails";
 import Player from "./components/Player";
@@ -9,7 +9,6 @@ import { decode } from "ent";
 import PlayerContext from "./contexts/PlayerContext";
 import { headerHeight, playerHeight } from "./utils/constants";
 import "typeface-quicksand";
-import { Theme } from "./utils/themes";
 
 const GlobalStyle = createGlobalStyle<{ theme: Theme }>`
   html, body{
@@ -31,7 +30,7 @@ const GlobalStyle = createGlobalStyle<{ theme: Theme }>`
 const StyledErrorMessage = styled.div`
   color: ${({ theme }) => theme.colors.highlightText};
 `;
-interface FilterTypes {
+export interface FilterTypes {
   stationName: string;
   artist: string;
   songName: string;
@@ -42,7 +41,7 @@ const filterTypes: FilterTypes = {
   songName: "Nazwa piosenki"
 };
 
-const sleep = async time => {
+const sleep = async (time: number) => {
   return new Promise(resolve => {
     setTimeout(() => {
       resolve();
@@ -60,8 +59,9 @@ export interface Tail extends InitialStationInfo {
   songName: string;
   cover: string;
 }
+export type FilterType = keyof FilterTypes;
 
-const App = () => {
+const App: React.FC = () => {
   const [initialStationInfo, setInitialStationInfo] = useState<
     InitialStationInfo[]
   >([]);
@@ -69,10 +69,8 @@ const App = () => {
   const [darkMode, setDarkMode] = useState<boolean>(true);
   const [allTails, setAllTails] = useState<Tail[]>([]);
   const [filtredTails, setFiltredTails] = useState<Tail[]>([]);
-  const [[currentFilterType, filterValue], setFilter] = useState([
-    "stationName",
-    ""
-  ]);
+  const [filterType, setFilterType] = useState<FilterType>("stationName");
+  const [filterValue, setFilterValue] = useState<string>("");
   const [wideGridLayout, setWideGridLayout] = useState<boolean>(true);
 
   useEffect(() => {
@@ -81,7 +79,7 @@ const App = () => {
         const {
           data: { stations }
         } = await axios.get("https://rmfon.pl/json/app.txt");
-        const info = stations.map(station => ({
+        const info = stations.map((station: any) => ({
           id: station.id + "",
           stationName: station.name,
           streamURL: station.mp3,
@@ -154,10 +152,10 @@ const App = () => {
     const filterVal = filterValue.toLowerCase();
     setFiltredTails(() =>
       allTails.filter(tail =>
-        tail[currentFilterType].toLowerCase().includes(filterVal)
+        tail[filterType].toLowerCase().includes(filterVal)
       )
     );
-  }, [allTails, filterValue, currentFilterType]);
+  }, [allTails, filterValue, filterType]);
 
   const toggleDarkMode = (): void =>
     setDarkMode((prev: boolean) => {
@@ -178,9 +176,10 @@ const App = () => {
         <Header
           toggleDarkMode={toggleDarkMode}
           darkMode={darkMode}
-          currentFilterType={currentFilterType}
+          filterType={filterType}
+          setFilterType={setFilterType}
           filterValue={filterValue}
-          setFilter={setFilter}
+          setFilterValue={setFilterValue}
           filterTypes={filterTypes}
           wideGridLayout={wideGridLayout}
           toggleGridLayout={toggleGridLayout}
